@@ -22,9 +22,7 @@ $(document).ready(function () {
     .then(response => response.json())
     .then(data => {
         const status = data.status;
-        
         const apiStatusDiv = document.getElementById('api_status');
-        
         if (status === 'OK') {
             apiStatusDiv.classList.add('available');
         } else {
