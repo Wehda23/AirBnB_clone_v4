@@ -39,52 +39,47 @@ import requests
 
 
 def __print_stdout(msg):
-    """Print message in STDOUT
-    """
+    """Print message in STDOUT"""
     sys.stdout.write(msg)
 
 
 def __print_stderr(msg):
-    """Print message in STDERR
-    """
+    """Print message in STDERR"""
     sys.stderr.write(msg)
 
 
 def __analyse_html(file_path):
-    """Start analyse of HTML file
-    """
-    h = {'Content-Type': "text/html; charset=utf-8"}
+    """Start analyse of HTML file"""
+    h = {"Content-Type": "text/html; charset=utf-8"}
     d = open(file_path, "rb").read()
     u = "https://validator.w3.org/nu/?out=json"
     r = requests.post(u, headers=h, data=d)
     res = []
-    messages = r.json().get('messages', [])
+    messages = r.json().get("messages", [])
     for m in messages:
-        res.append("[{}:{}] {}".format(file_path, m['lastLine'], m['message']))
+        res.append("[{}:{}] {}".format(file_path, m["lastLine"], m["message"]))
     return res
 
 
 def __analyse_css(file_path):
-    """Start analyse of CSS file
-    """
-    d = {'output': "json"}
-    f = {'file': (file_path, open(file_path, 'rb'), 'text/css')}
+    """Start analyse of CSS file"""
+    d = {"output": "json"}
+    f = {"file": (file_path, open(file_path, "rb"), "text/css")}
     u = "http://jigsaw.w3.org/css-validator/validator"
     r = requests.post(u, data=d, files=f)
     res = []
-    errors = r.json().get('cssvalidation', {}).get('errors', [])
+    errors = r.json().get("cssvalidation", {}).get("errors", [])
     for e in errors:
-        res.append("[{}:{}] {}".format(file_path, e['line'], e['message']))
+        res.append("[{}:{}] {}".format(file_path, e["line"], e["message"]))
     return res
 
 
 def __analyse(file_path):
-    """Start analyse of a file and print the result
-    """
+    """Start analyse of a file and print the result"""
     nb_errors = 0
     try:
         result = None
-        if file_path.endswith('.css'):
+        if file_path.endswith(".css"):
             result = __analyse_css(file_path)
         else:
             result = __analyse_html(file_path)
@@ -102,8 +97,7 @@ def __analyse(file_path):
 
 
 def __files_loop():
-    """Loop that analyses for each file from input arguments
-    """
+    """Loop that analyses for each file from input arguments"""
     nb_errors = 0
     for file_path in sys.argv[1:]:
         nb_errors += __analyse(file_path)
@@ -112,8 +106,7 @@ def __files_loop():
 
 
 if __name__ == "__main__":
-    """Main
-    """
+    """Main"""
     if len(sys.argv) < 2:
         __print_stderr("usage: w3c_validator.py file1 file2 ...\n")
         exit(1)
