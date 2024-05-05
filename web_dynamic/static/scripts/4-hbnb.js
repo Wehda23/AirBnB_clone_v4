@@ -1,3 +1,4 @@
+/* This is an event listener when the page is loaded */
 $(document).ready(function () {
     const amenities = [];
     $('input[type="checkbox"]').click(function (){
@@ -33,6 +34,15 @@ $(document).ready(function () {
     .catch(error => {
         console.error('Error:', error);
     });
+    // Grab places
+    post_places_search();
+
+    /* Add event listener to button onclick */
+    $("button").click(post_places_search);
+})
+
+
+function post_places_search() {
     /* Fetch places */
     fetch('http://0.0.0.0:5001/api/v1/places_search/', {
         method: 'POST',
@@ -44,6 +54,7 @@ $(document).ready(function () {
     .then(response => response.json())
     .then(data => {
         const placesSection = document.querySelector('.places');
+        placesSection.innerHTML = "";
         data.forEach(place => {
             const article = document.createElement('article');
             article.innerHTML = `
@@ -67,4 +78,4 @@ $(document).ready(function () {
         });
     })
     .catch(error => console.error('Error fetching places:', error));
-})
+}
